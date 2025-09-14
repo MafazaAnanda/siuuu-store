@@ -1,6 +1,12 @@
-<h5>Nama Toko:</h5>
-<p>{{ store_name }}</p>
+ {% extends 'base.html' %}
+ {% block content %}
+
+<h1>{{ store_name }}</h1>
+
 <h5>Nama:</h5>
 <p>{{ name }}</p>
+
 <h5>NPM:</h5>
 <p>{{ npm }}</p>
+
+{% endblock content %}
