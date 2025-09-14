@@ -1,7 +1,6 @@
 import uuid
 from django.db import models
 
-# Create your models here.
 class Item(models.Model):
     CATEGORY_CHOICES = [
     ('jersey', 'Jersey'),
@@ -21,5 +20,7 @@ class Item(models.Model):
     stock = models.PositiveIntegerField(default=0)
     brand = models.CharField(max_length=25, blank=True)
 
-def __str__(self):
+    def get_category_display(self):
+        return dict(self.CATEGORY_CHOICES).get(self.category, self.category)
+    def __str__(self):
         return self.name
