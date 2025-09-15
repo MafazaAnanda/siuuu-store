@@ -1,6 +1,7 @@
 *Link Aplikasi: https://mafaza-ananda-footballnews.pbp.cs.ui.ac.id/
+*TUGAS 2
 
-*Langkah-langkah implementasi
+*Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 1. Membuat sebuah proyek Django baru
    -Membuat folder baru untuk projek ini
    -Membuat dan mengaktifkan virtual enviroment
@@ -50,3 +51,19 @@ Karena simpel dan mudah diaplikasikan
 
 *Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?
 Asisten dosen sudah menyampaikan informasi-informasi yang diperlukan untuk menyelesaikan tutorial 1
+
+*TUGAS 3
+
+*Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+
+*Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+
+*Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+
+*Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+
+*Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+*Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
+
+*Mengakses keempat URL di poin 2 menggunakan Postman, membuat screenshot dari hasil akses URL pada Postman, dan menambahkannya ke dalam README.md

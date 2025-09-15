@@ -30,7 +30,7 @@
   <br />
   {% endif %}
 
-  <p>{{ item.content|truncatewords:25 }}...</p>
+  <p>{{ item.description|truncatewords:25 }}...</p>
 
   <p><a href="{% url 'main:show_item' item.id %}"><button>Read More</button></a></p>
 </div>
