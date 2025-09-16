@@ -55,15 +55,31 @@ Asisten dosen sudah menyampaikan informasi-informasi yang diperlukan untuk menye
 *TUGAS 3
 
 *Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+Karena data delivery berguna agar platform dapat bekerja dengan akurat, di mana format yang diberikan haruslah konsisten.
 
 *Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+Menurut saya JSON lebih baik daripada karena bagi saya lebih mudah untuk dibaca. Alasan JSON lebih populer dibandingkan XML adalah karena JSON lebih cepat untuk di-parse dan lebih compact dibandingkan XML. Alasan ini saya dapatkan dari link sebagai berikut: https://www.w3schools.com/js/js_json_xml.asp & https://stackoverflow.com/questions/5615352/xml-and-json-advantages-and-disadv
 
 *Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+Untuk mengecek apakah form yang diisi sudah sesuai dengan requirementnya. is_valid() dibutuhkan karena kita ingin form yang diisi sesuai dengan requirement yang kita berikan.
 
 *Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+csrf_token dibutuhkan karena berfungsi sebagai pencegah Cross Site Request Forgery di mana akan digenerate sebuah token. Jika kita menggunakan csrf_token ini, maka akan rentan terhadap serangan CSRF tadi. Para penyerang bisa saja masuk ke browser korban yang sedang login lalu mengirim request yang berbahaya seperti transfer uang dll.
 
 *Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
-
+1. Membuat skeleton untuk kerangka views
+    -Membuat folder templates di main folder lalu membuat file base.html
+    -Update templates yang ada di settings.py dan juga main.html yang di mana nanti akan digunakan untuk menampilkan halaman main
+2. Membuat form input dan display
+    -Membuat file forms.py di main dan menambahkan class itemsform yang berisi apa saja yang perlu di input di form
+    -Update views.py agar bisa menampilkan halaman untuk add item dan juga detail dari itemnya
+    -Menambahkan url pattern di folder main agar bisa menampilkan halaman add item dan detail dari item
+    -Membuat 2 file html, yaitu add_item dan item_detail
+3. Menambahkan 4 fungsi, yaitu show_xml, show_json, show_xml_by_id, dan show_json_by_id
+    - Buat 4 fungsi ini di views.py lalu routing juga urlnya
+       
 *Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?
+Asisten dosen sudah memberikan tutorial berupa live coding sebelum memulai tutorial dan sangat membantu.
 
 *Mengakses keempat URL di poin 2 menggunakan Postman, membuat screenshot dari hasil akses URL pada Postman, dan menambahkannya ke dalam README.md
+Link: https://drive.google.com/drive/folders/1AnnbCUxVTXdxXLghML9VaGUMKOIDB8EI?hl=id
