@@ -1,19 +1,24 @@
+import datetime
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404
 from main.forms import Itemsform
 from main.models import Item
 
+@login_required(login_url='/login')
 def show_main(request):
     item_list = Item.objects.all()
     context = {
         'store_name' : 'siuuu-store',
         'name': 'Mafaza Ananda Rahman',
         'npm' : '2406401306',
-        'item_list' : item_list
+        'item_list' : item_list,
+        'last_login' : request.COOKIES.get('last_login', 'Never')
     }
 
     return render(request, "main.html", context)
@@ -28,6 +33,7 @@ def add_item(request):
     context = {'form': form}
     return render(request, 'add_item.html', context)
 
+@login_required(login_url='/login')
 def show_item(request, id):
     item = get_object_or_404(Item, pk=id)
 
@@ -69,9 +75,11 @@ def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Your account has been succesfully created!')
-            return redirect('main:login')
+            user = form.get_user()
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response     
         
     context = {'form' : form}
     return render(request, 'register.html', context)
@@ -93,4 +101,6 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('main:login')
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
