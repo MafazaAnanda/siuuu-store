@@ -12,10 +12,15 @@ from main.models import Item
 
 @login_required(login_url='/login')
 def show_main(request):
-    item_list = Item.objects.all()
+    filter_type = request.GET.get("filter", "all")
+    if (filter_type == "all"):
+        item_list = Item.objects.all()
+    else:
+        item_list = Item.objects.filter(user=request.user)
+
     context = {
         'store_name' : 'siuuu-store',
-        'name': 'Mafaza Ananda Rahman',
+        'name': request.user.username,
         'npm' : '2406401306',
         'item_list' : item_list,
         'last_login' : request.COOKIES.get('last_login', 'Never')
@@ -27,7 +32,9 @@ def add_item(request):
     form = Itemsform(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        form.save()
+        item_entry = form.save(commit=False)
+        item_entry.user  = request.user
+        item_entry.save()
         return redirect ('main:show_main')
     
     context = {'form': form}

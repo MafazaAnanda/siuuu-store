@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+
 <h1>{{ store_name }}</h1>
 
 <h5>Nama:</h5>
@@ -16,6 +19,12 @@
 <h5>Sesi terakhir login: {{ last_login }}</h5>
 <hr>
 
+<a href="?filter=all">
+    <button type="button">All Item</button>
+</a>
+<a href="?filter=my">
+    <button type="button">My Item</button>
+</a> 
 {% if not item_list %} 
 <p>Belum ada data  item pada siuuu store.</p>
 {% else %}
@@ -43,3 +52,5 @@
 {% endfor %}
 
 {% endif %}
+
+{% endblock content %}
