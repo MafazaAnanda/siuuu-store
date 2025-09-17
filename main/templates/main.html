@@ -10,6 +10,9 @@
     <button>+Add Item</button>
 </a> 
 
+<a href="{% url 'main:logout' %}">
+  <button>Logout</button>
+</a>
 <hr>
 
 {% if not item_list %} 
