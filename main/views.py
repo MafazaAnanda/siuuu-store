@@ -1,9 +1,11 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.http import HttpResponse
 from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404
 from main.forms import Itemsform
 from main.models import Item
-# Create your views here.
+
 def show_main(request):
     item_list = Item.objects.all()
     context = {
@@ -59,3 +61,16 @@ def show_json_by_id(request, item_id):
         return HttpResponse(json_data, content_type="application/json")
     except Item.DoesNotExist:
         return HttpResponse(status=404)
+    
+def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been succesfully created!')
+            return redirect('main:login')
+        
+    context = {'form' : form}
+    return render(request, 'register.html', context)
