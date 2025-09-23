@@ -83,3 +83,50 @@ Asisten dosen sudah memberikan tutorial berupa live coding sebelum memulai tutor
 
 *Mengakses keempat URL di poin 2 menggunakan Postman, membuat screenshot dari hasil akses URL pada Postman, dan menambahkannya ke dalam README.md
 Link: https://drive.google.com/drive/folders/1AnnbCUxVTXdxXLghML9VaGUMKOIDB8EI?hl=id
+
+*Tugas 4
+
+*Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+Class bawaan dari Django yang berfungsi untuk menangani proses autentikasi berupa login dari user yang mena menyediakan validadi dari username dan password yang ditulis user.
+Kelebihan:
+    -Mudah untuk digunakan
+    -Aman digunakan termasuk aman dari serangan CSRF
+    -Handle error yang jelas
+Kekurangan:
+    -Lumayan susah untuk dikustomisasi
+
+*Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut? 
+Autentikasi lebih kepada verifikasi siapa yang ingin login sedangkan otorisasi lebih kepada pemberian akses terhadap orang yang sudah terautentikasi.
+Autentikasi ditangani oleh sistem login/logout dan User model bawaan. Sedangkan otorisasi ditangani oleh sistem permissions dan groups di mana sudah disediakan izin bawaan seperti add, change, delete, dan view di setiap model.
+
+*Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+Session:
+    Kelebihan:
+        -Lebih aman
+        -Ukurannya besar
+    Kelemahan:
+        -Beban server yang tinggi
+Cookies:
+    Kelebihan:
+        -Simpel
+        -persisten
+    Kekurangan   
+        -Kurang aman
+        -Ukurannya kecil                                                          
+
+*Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+Cookies secara default belum aman, masih bisa terkena serangan seperti CSRF. Django membuat token CSRF di form POST untuk mencegah penyerangan.
+
+*Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+1. Membuat form registrasi dan login logout
+    -Membuat fungsi registrasi di views.py, lalu buat register.html untuk page register, dan routing urlnya
+    -Membuat fungsi login dan logout di views.py, lalu buat login.html untuk page login, dan routing kedua urlnya.
+    -Restriksi tampilan main dan detail item agar harus login 
+2. Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last_login pada halaman utama aplikasi.
+    -Update fungsi login_user dan show_main untuk menambahkan cookie baru lalu menampilkannya
+    -Update fungsi logout_user agar bisa menghapus cookie last_login
+3. Menghubungkan model dengan user
+    -Update class item pada models.py agar item-item yang sudah ditambahkan sebelumnya tetap valid dan menghapus item jika user dihapus
+    -update show_main agar menampilkan username dengan user yang sedang login sekarang, lalu tambahkan filter my dan all untuk main.html agar bisa bisa memfilter itemnya berdasarkan orang yang menambahkan itemnya
+4. Membuat dua (2) akun pengguna dengan masing-masing tiga (3) dummy data menggunakan model yang telah dibuat sebelumnya untuk setiap akun di lokal.
+    -2 akun dengan akun pertama usernamenya Faza, dan akun kedua Paja, di mana untuk 3 item Faza adalah Nike Skills Total 90, Nike Grip3, dan Predator Elite Fold-Over Tongue Firm Ground Boots, sedangkan untuk 3 item Paja adalah Real Madrid 25/26 Third Jersey Replica, Brazil 2004 Total 90 Reissue, dan Portugal 25 Home Jersey Replica.
