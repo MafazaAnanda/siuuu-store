@@ -13,10 +13,13 @@ from main.models import Item
 @login_required(login_url='/login')
 def show_main(request):
     filter_type = request.GET.get("filter", "all")
+    category = request.GET.get("category")
     if (filter_type == "all"):
         item_list = Item.objects.all()
     else:
         item_list = Item.objects.filter(user=request.user)
+    if category:
+        item_list = item_list.filter(category=category)
 
     context = {
         'store_name' : 'siuuu-store',

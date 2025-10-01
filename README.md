@@ -130,3 +130,32 @@ Cookies secara default belum aman, masih bisa terkena serangan seperti CSRF. Dja
     -update show_main agar menampilkan username dengan user yang sedang login sekarang, lalu tambahkan filter my dan all untuk main.html agar bisa bisa memfilter itemnya berdasarkan orang yang menambahkan itemnya
 4. Membuat dua (2) akun pengguna dengan masing-masing tiga (3) dummy data menggunakan model yang telah dibuat sebelumnya untuk setiap akun di lokal.
     -2 akun dengan akun pertama usernamenya Faza, dan akun kedua Paja, di mana untuk 3 item Faza adalah Nike Skills Total 90, Nike Grip3, dan Predator Elite Fold-Over Tongue Firm Ground Boots, sedangkan untuk 3 item Paja adalah Real Madrid 25/26 Third Jersey Replica, Brazil 2004 Total 90 Reissue, dan Portugal 25 Home Jersey Replica.
+
+*Tugas 5
+*Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+1. Inline styles: Inline styles adalah style yang langsung ditulis di html.
+2. ID selector: ID selector adalah selector yang menargetkan elemen berdasarkan ID.
+3. Classes, Attributes, dan pseudo-classes: Class adalah selector yang menargetkan elemen class, Attributes adalah selector yang menargetkan element berdasarkan atribut atau nilai dari atributnya, dan pseudo-class adalah selector yang menargetkan elemen berdasarkan statusnya.
+4. element dan pseudo-element: Element adalah selector yang menargetkan semua tag dengan nama yang sesuai dan pseudo-element adalah selector yang menargetkan bagian spesifik dari sebuah elemen.
+
+*Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+Karena dengan menerapkan responsive design, maka user experience yang dirasakan user akan semakin baik. Contoh yang sudah responsive adalah Tokopedia karena sudah sangat mudah untuk diakses baik di web ataupun mobile dan di masing-masing device sudah berbeda tampilannya agar bisa disesuaikan dengan usernya, sedangkan untuk yang belum responsive adalah aplikasi versi lama dari reddit yang belum responsive(versi sekarang sudah) karena untuk web dan mobile tidak dibedakan.
+
+*Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+1. Padding adalah ruang transparan yang berada di antara border dan konten, contoh: margin: 67px
+2. Border adalah garis yang mengelilingi padding dan konten, contoh: border: 67px solid black
+3. Margin adalah ruang transparan yang berada di luar border, contoh: padding: 6px 7px
+
+*Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Flexbox adalah sistem layout satu dimensi yang di mana berguna untuk mengatur komponen-komponen yang kecil, sedangkan grid layout adalah sistem layout dua dimensi yang di maa berguna untuk mengatur struktur layout utama
+
+*Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+1. Mengimplementasikan edit dan delete item
+    -Membuat fungsi edit dan delete item di views.py, lalu buat halaman hmtlnya, dan routing urlnya.
+2. Styling pada Aplikasi dengan Tailwind dan External CSS
+    -Tambahkan tailwind sebagai framework CSS
+    -Buat folder static di root, lalu folder css, dan buat file global.css, serta juga hubungkan global.css dan tailwind ke base.html
+    -Kustom main, login, logout,register, add_item, dan item_detail dengan tailwind
+    -Buat navbar dan kustom dengan tailwind
+    -Buat file html baru yaitu card_item untuk preview masing-masing item dan kustom dengan tailwind
+    -Buat folder image untuk menyimpan png untuk gambar default ketika belum ada item yang dibuat
