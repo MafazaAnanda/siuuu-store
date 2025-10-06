@@ -99,6 +99,8 @@ def show_json_by_id(request, item_id):
             'stock' : item.stock,
             'brand' : item.brand,
             'user_id': item.user_id,
+            'user_username': item.user.username if item.user_id else None,
+            'is_trusted': item.user.is_authenticated if item.user else False,
         }
         return JsonResponse(data)
     except Item.DoesNotExist:
