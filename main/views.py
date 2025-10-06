@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.shortcuts import render, redirect, get_object_or_404
 from main.forms import Itemsform
@@ -60,8 +60,23 @@ def show_xml(request):
 
 def show_json(request):
     item_list = Item.objects.all()
-    json_data = serializers.serialize("json", item_list)
-    return HttpResponse(json_data, content_type="application/json")
+    data = [
+        {
+            'id': str(item.id),
+            'name': item.name,
+            'description': item.description,
+            'category': item.category,
+            'thumbnail': item.thumbnail,
+            'is_featured': item.is_featured,
+            'stock' : item.stock,
+            'brand' : item.brand,
+            'user_id': item.user_id,
+            'price' : item.price,
+        }
+        for item in item_list
+    ]
+
+    return JsonResponse(data, safe=False)
 
 def show_xml_by_id(request, item_id):
     try:
@@ -73,11 +88,21 @@ def show_xml_by_id(request, item_id):
 
 def show_json_by_id(request, item_id):
     try:
-        item = Item.objects.filter(pk=item_id)
-        json_data = serializers.serialize("json", item)
-        return HttpResponse(json_data, content_type="application/json")
+        item = Item.objects.select_related('user').get(pk=item_id)
+        data = {
+            'id': str(item.id),
+            'name': item.name,
+            'description': item.description,
+            'category': item.category,
+            'thumbnail': item.thumbnail,
+            'is_featured': item.is_featured,
+            'stock' : item.stock,
+            'brand' : item.brand,
+            'user_id': item.user_id,
+        }
+        return JsonResponse(data)
     except Item.DoesNotExist:
-        return HttpResponse(status=404)
+        return JsonResponse({'detail': 'Not found'}, status=404)
     
 def register(request):
     form = UserCreationForm()

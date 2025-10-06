@@ -19,10 +19,10 @@
     <!-- Filter Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-white rounded-lg border border-gray-200 p-4">
       <div class="flex space-x-3 mb-4 sm:mb-0">
-        <a href="?" class="{% if request.GET.filter == 'all' or not request.GET.filter  %} bg-indigo-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-indigo-600 hover:text-white">
+        <a id="filter-all" class="bg-indigo-600 text-white px-4 py-2 rounded-md font-medium transition-colors hover:bg-indigo-700 cursor-pointer">
           All Item
         </a>
-        <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-indigo-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-indigo-600 hover:text-white">
+        <a id="filter-my" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors hover:bg-indigo-600 hover:text-white cursor-pointer">
           My Item
         </a>
       </div>
@@ -33,25 +33,129 @@
       {% endif %}
     </div>
 
+    <!-- Loading State -->
+    <div id="loading" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+      <svg class="animate-spin h-8 w-8 text-indigo-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <p class="text-gray-600 mt-3">Loading items...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="hidden text-center bg-red-50 border border-red-200 text-red-600 p-6 rounded-lg mb-8">
+      Something went wrong. Please try again later.
+    </div>
+
     <!-- Item Grid -->
-    {% if not item_list %}
-      <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-        <div class="w-32 h-32 mx-auto mb-4">
-          <img src="{% static 'image/no-item.png' %}" alt="No item available" class="w-full h-full object-contain">
-        </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No item found</h3>
-        <p class="text-gray-500 mb-6">Be the first to add football items.</p>
-        <a href="{% url 'main:add_item' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-          Add Item
-        </a>
+    <div id="grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden"></div>
+
+    <!-- Empty State -->
+    <div id="empty" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+      <div class="w-32 h-32 mx-auto mb-4">
+        <img src="{% static 'image/no-item.png' %}" alt="No item available" class="w-full h-full object-contain">
       </div>
-    {% else %}
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {% for item in item_list %}
-          {% include 'card_item.html' with item=item %}
-        {% endfor %}
-      </div>
-    {% endif %}
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No item found</h3>
+      <p class="text-gray-500 mb-6">Be the first to add football items.</p>
+      <a href="{% url 'main:add_item' %}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+        Add Item
+      </a>
+    </div>
   </div>
 </div>
+
+<!-- Script Section -->
+<script>
+const ITEM_API_ENDPOINT = "{% url 'main:show_json' %}";
+const CURRENT_USER_ID = "{{ user.id|default_if_none:'' }}";
+
+const loading = document.getElementById("loading");
+const error = document.getElementById("error");
+const empty = document.getElementById("empty");
+const grid = document.getElementById("grid");
+const filterAll = document.getElementById("filter-all");
+const filterMy = document.getElementById("filter-my");
+
+let activeFilter = 'all';
+let allItems = [];
+
+function toggleSections({loadingState=false, errorState=false, emptyState=false, gridState=false}) {
+  loading.classList.toggle("hidden", !loadingState);
+  error.classList.toggle("hidden", !errorState);
+  empty.classList.toggle("hidden", !emptyState);
+  grid.classList.toggle("hidden", !gridState);
+}
+
+function updateFilterButtons() {
+  if (activeFilter === "all") {
+    filterAll.className = "bg-indigo-600 text-white px-4 py-2 rounded-md font-medium hover:bg-indigo-700 cursor-pointer";
+    filterMy.className = "bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium hover:bg-indigo-600 hover:text-white cursor-pointer";
+  } else {
+    filterMy.className = "bg-indigo-600 text-white px-4 py-2 rounded-md font-medium hover:bg-indigo-700 cursor-pointer";
+    filterAll.className = "bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium hover:bg-indigo-600 hover:text-white cursor-pointer";
+  }
+}
+
+function renderItems(items) {
+  grid.innerHTML = "";
+  items.forEach(item => {
+    const card = `
+    <article class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group w-64 mx-auto">
+      <div class="aspect-[15/16] relative overflow-hidden bg-gray-100">
+        ${item.thumbnail ? 
+          `<img src="${item.thumbnail}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">`
+          : `<div class="w-full h-full bg-gray-200"></div>`}
+      </div>
+      <div class="p-5">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-xs font-medium text-gray-500 uppercase">${item.brand}</p>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium text-black">${item.category}</span>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2 leading-tight">
+          <a href="/item/${item.id}/" class="hover:text-indigo-600 transition-colors">${item.name}</a>
+        </h3>
+        <p class="text-lg font-bold text-black mb-1">Rp ${item.price}</p>
+        <p class="text-sm text-gray-700 mb-[2px]"><span class="font-semibold">Stock:</span> ${item.stock}</p>
+        <div class="pt-4 flex justify-center">
+          <a href="/item/${item.id}/" class="inline-block px-3 py-1 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700">
+            View Detail
+          </a>
+        </div>
+      </div>
+    </article>`;
+    grid.innerHTML += card;
+  });
+}
+
+function filterAndShow() {
+  updateFilterButtons();
+  const visibleItems = activeFilter === 'all' 
+    ? allItems 
+    : allItems.filter(it => Number(it.user_id) === Number(CURRENT_USER_ID));
+  if (visibleItems.length === 0) {
+    toggleSections({emptyState:true});
+  } else {
+    renderItems(visibleItems);
+    toggleSections({gridState:true});
+  }
+}
+
+async function fetchItems() {
+  try {
+    toggleSections({loadingState:true});
+    const response = await fetch(ITEM_API_ENDPOINT);
+    if (!response.ok) throw new Error();
+    const data = await response.json();
+    allItems = data;
+    filterAndShow();
+  } catch {
+    toggleSections({errorState:true});
+  }
+}
+
+filterAll.addEventListener("click", () => { activeFilter = "all"; filterAndShow(); });
+filterMy.addEventListener("click", () => { activeFilter = "my"; filterAndShow(); });
+
+fetchItems();
+</script>
 {% endblock content %}
