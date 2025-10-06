@@ -8,13 +8,13 @@ function showToast(title, message, type = 'normal', duration = 3000) {
     // Remove all type classes first
     toastComponent.classList.remove(
         'bg-red-50', 'border-red-500', 'text-red-600',
-        'bg-green-50', 'border-green-500', 'text-green-600',
+        'bg-indigo-50', 'border-indigo-500', 'text-indigo-600',
         'bg-white', 'border-gray-300', 'text-gray-800'
     );
 
     // Set type styles and icon
     if (type === 'success') {
-        toastComponent.classList.add('bg-green-50', 'border-green-500', 'text-green-600');
+        toastComponent.classList.add('bg-indigo-50', 'border-indigo-500', 'text-indigo-600');
         toastComponent.style.border = '1px solid #22c55e';
     } else if (type === 'error') {
         toastComponent.classList.add('bg-red-50', 'border-red-500', 'text-red-600');

@@ -7,70 +7,82 @@
 
 {% block content %}
 <div class="bg-gray-50 w-full min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Back -->
+    <div class="mb-6">
+      <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+          ← Back to SIUUU STORE
+        </a>
+    </div>
+    
+    <!-- Card container -->
+    <article class="bg-white rounded-lg border border-gray-200 overflow-hidden p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         
-        <!-- Back Navigation -->
-        <div class="mb-6">
-            <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-                ← Back to Item
-            </a>
-        </div>
-        
-        <!-- Article -->
-        <article class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            
-            <!-- Header -->
-            <div class="p-6 sm:p-8">
-                <div class="flex flex-wrap items-center gap-2 mb-4">
-                    <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-green-600 text-white">
-                        {{ item.get_category_display }}
-                    </span>
-                    {% if item.is_featured %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Featured
-                        </span>
-                    {% endif %}
-                </div>
-                
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
-                    {{ item.name }}
-                </h1>
-            </div>
-
-            <!-- Featured Image -->
+        <!-- Left: Thumbnail -->
+        <div class="flex flex-col items-center">
             {% if item.thumbnail %}
-                <div class="px-6 sm:px-8">
-                    <img src="{{ item.thumbnail }}" 
-                         alt="{{ item.name }}" 
-                         class="w-full max-h-96 object-contain rounded-lg">
-                </div>
+            <img src="{{ item.thumbnail }}" 
+                alt="{{ item.name }}" 
+                class="w-full max-w-md object-contain rounded-lg mb-4 transition-transform duration-300 hover:scale-105">
             {% endif %}
 
-            <!-- Description -->
-            <div class="p-6 sm:p-8">
-                <div class="prose prose-lg max-w-none">
-                    <div class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg">
-                        {{ item.description }}
-                    </div>
-                </div>
-            </div>
-
             <!-- Seller Info -->
-            <div class="border-t border-gray-200 p-6 sm:p-8 bg-gray-50">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="font-medium text-gray-900">
-                            {% if item.user %}
-                                <p>Seller: {{ item.user.username }}</p>
-                            {% else %}
-                                <p>Seller: Anonymous</p>
-                            {% endif %}
-                        </div>
-                        <p class="text-sm text-gray-500">Seller</p>
-                    </div>
-                </div>
+            <div class="text-center border-t border-gray-200 pt-4 w-full">
+                <p class="font-medium text-gray-900">
+                    {% if item.user %}
+                        Seller: {{ item.user.username }}
+                    {% else %}
+                        Seller: Anonymous
+                    {% endif %}
+                </p>
+                <p class="text-sm text-gray-500">Trusted Seller</p>
             </div>
-        </article>
-    </div>
+      </div>
+
+      <!-- Right: Details -->
+      <div>
+        <div class="flex items-center justify-between mb-2">
+            
+          <!-- Brand -->
+            <p class="text-sm font-medium text-indigo-600 uppercase mb-0">
+                {{ item.brand }}
+            </p>
+            
+            <!-- Featured Badge -->
+            {% if item.is_featured %}
+            <span class="inline-flex items-center px-3 py-1 rounded-md text-xl font-medium text-yellow-800">
+                ⭐
+            </span>
+            {% endif %}
+        </div>
+        
+        <!-- Category -->
+        <span class="inline-flex items-center rounded-md text-lg font-medium text-black">
+          {{ item.get_category_display }}
+        </span>
+
+        <!-- Name -->
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+          {{ item.name }}
+        </h1>
+
+        <!-- Price & Stock -->
+        <div class="mb-0">
+          <p class="text-lg font-bold text-black mb-2">
+            Rp {{ item.price }}
+          </p>
+          <p class="text-sm text-gray-700">
+            <span class="font-semibold">Stock:</span> {{ item.stock }}
+          </p>
+        </div>
+
+        <!-- Description -->
+        <div class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg mb-2">
+          {{ item.description }}
+        </div>
+
+      </div>
+    </article>
+  </div>
 </div>
 {% endblock content %}
