@@ -159,11 +159,17 @@ def edit_item(request, id):
 
     return render(request, "edit_item.html", context)
 
+@require_POST
 def delete_item(request, id):
-    item = get_object_or_404(Item, pk=id)
-    item.delete()
-    return HttpResponseRedirect(reverse('main:show_main'))
-
+    try:
+        item = get_object_or_404(Item, pk=id)
+        if item.user == request.user:
+            item.delete()
+            return JsonResponse({'status': 'success', 'message': 'Item berhasil dihapus.'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Anda tidak punya izin untuk menghapus item ini.'}, status=403)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 @csrf_exempt
 @require_POST
 def add_item_entry_ajax(request):

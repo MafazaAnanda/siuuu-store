@@ -89,9 +89,9 @@
 
     <div class="flex items-center justify-end p-4 space-x-2 border-t border-gray-200 rounded-b">
       <button type="button" class="px-5 py-2.5 text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-900" onclick="hideDeleteModal()">Cancel</button>
-      <a id="confirmDeleteButton" href="#" class="px-5 py-2.5 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700">
-        Yes, I'm sure
-      </a>
+      <button id="confirmDeleteButton" type="button" class="px-5 py-2.5 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-700">
+      Yes, I'm sure
+  </button>
     </div>
   </div>
 </div>
@@ -101,6 +101,7 @@ const ITEM_API_ENDPOINT = "{% url 'main:show_json' %}";
 const CURRENT_USER_ID = "{{ user.id|default_if_none:'' }}";
 
 let activeFilter = 'all';
+let activeCategory = 'all';
 let allItems = [];
 
 const loadingDisplay = document.getElementById("loading");
@@ -121,17 +122,33 @@ function toggleSections({ showLoading = false, showError = false, showEmpty = fa
 }
 
 function showDeleteModal(deleteUrl, itemName) {
-  deleteItemNameSpan.textContent = itemName;
-  
-  confirmDeleteButton.href = deleteUrl;
+    deleteItemNameSpan.textContent = itemName;
 
-  deleteConfirmModal.classList.remove('hidden');
+    confirmDeleteButton.onclick = async function() {
+        try {
+            const response = await fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', 
+                },
+            });
+
+            if (!response.ok) throw new Error('Failed to delete');
+
+            hideDeleteModal();         
+            fetchItemsFromServer();    
+        } catch (err) {
+            alert('Gagal menghapus item');
+            console.error(err);
+        }
+    };
+
+    deleteConfirmModal.classList.remove('hidden');
 }
 
 function hideDeleteModal() {
   deleteConfirmModal.classList.add('hidden');
-
-  confirmDeleteButton.href = "#"; 
+  confirmDeleteButton.onclick = null; 
 }
 function updateFilterButtons() {
   if (activeFilter === "all") {
@@ -167,7 +184,7 @@ function buildItemCardElement(item) {
          <a href="javascript:void(0);" onclick="showDeleteModal('${deleteUrl}', '${name}')" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">Delete</a>
        </div>`
     : '';
-    
+
   const cardHtml = `
     <div class="aspect-[15/16] relative overflow-hidden bg-gray-100">
       ${thumbnail ? 
@@ -208,16 +225,30 @@ function renderItems(items) {
 function filterAndDisplayItems() {
   updateFilterButtons();
   
-  const visibleItems = activeFilter === 'all' 
+  let visibleItems = activeFilter === 'all' 
     ? allItems 
     : allItems.filter(it => Number(it.user_id) === Number(CURRENT_USER_ID));
-  
+
+  if (activeCategory !== 'all') {
+    visibleItems = visibleItems.filter(item => 
+        item.category && item.category.toLowerCase() === activeCategory.toLowerCase()
+    );
+  }
+
   if (visibleItems.length === 0) {
     toggleSections({ showEmpty: true });
   } else {
     renderItems(visibleItems);
     toggleSections({ showGrid: true });
   }
+}
+
+function handleCategoryClick(event) {
+    event.preventDefault();
+    const category = event.target.dataset.category;
+    activeCategory = category;
+    activeFilter = 'all'; 
+    filterAndDisplayItems();
 }
 
 async function fetchItemsFromServer() {
@@ -237,6 +268,7 @@ async function fetchItemsFromServer() {
 
 function handleFilterAllClick() {
   activeFilter = "all";
+  activeCategory = "all";
   filterAndDisplayItems();
 }
 
@@ -249,6 +281,19 @@ function initializePage() {
     filterAllButton.addEventListener("click", handleFilterAllClick);
     filterMyButton.addEventListener("click", handleFilterMyClick);
     
+    const categoryLinks = document.querySelectorAll(".category-filter-link");
+    categoryLinks.forEach(link => {
+      link.addEventListener("click", handleCategoryClick);
+    }); 
+
+    const homeLogoLink = document.getElementById("home-logo-link");
+    if (homeLogoLink) {
+        homeLogoLink.addEventListener("click", function(event) {
+            event.preventDefault(); 
+            handleFilterAllClick(); 
+        });
+    }
+
     const refreshButton = document.getElementById("refreshButton");
     if (refreshButton) {
         refreshButton.addEventListener("click", function() {
@@ -266,7 +311,7 @@ function initializePage() {
 initializePage();
 document.addEventListener('itemAdded', function() {
     // Refresh data without page reload
-    fetchItemFromServer();
+    fetchItemsFromServer();
 });
 </script>
 {% endblock content %}
