@@ -179,11 +179,17 @@ function buildItemCardElement(item) {
   const buttonContainerClass = isSeller ? 'justify-between' : 'justify-center';
 
   const actionButtonsHtml = isSeller
-    ? `<div class="flex items-center space-x-2">
-         <a href="${editUrl}" class="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">Edit</a>
-         <a href="javascript:void(0);" onclick="showDeleteModal('${deleteUrl}', '${name}')" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">Delete</a>
-       </div>`
-    : '';
+      ? `<div class="flex items-center space-x-2">
+              <button 
+                type="button"
+                onclick="showEditModal('${item.id}')" 
+                class="inline-block px-3 py-1 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+            >
+                Edit
+            </button>
+              <a href="javascript:void(0);" onclick="showDeleteModal('${deleteUrl}', '${name}')" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">Delete</a>
+          </div>`
+      : '';
 
   const cardHtml = `
     <div class="aspect-[15/16] relative overflow-hidden bg-gray-100">

@@ -198,3 +198,38 @@ def add_item_entry_ajax(request):
     new_item.save()
 
     return HttpResponse(b"CREATED", status=201)
+
+@login_required
+@csrf_exempt 
+def edit_item_ajax(request, id):
+    if request.method == 'POST':
+        item = get_object_or_404(Item, pk=id)
+
+        if item.user != request.user:
+            return JsonResponse({"status": "error", "message": "You do not have permission to edit this item."}, status=403)
+
+        item.name = request.POST.get("name")
+        item.price = int(request.POST.get("price"))
+        item.description = request.POST.get("description")
+        item.thumbnail = request.POST.get("thumbnail")
+        item.category = request.POST.get("category")
+        item.stock = int(request.POST.get("stock"))
+        item.brand = request.POST.get("brand")
+        item.is_featured = request.POST.get("is_featured") == 'on'
+        
+        item.save()
+
+        return JsonResponse({"status": "success"})
+    
+    return JsonResponse({"status": "error"}, status=400)
+
+@login_required
+def get_item_json(request, id):
+    """
+    View to get a single item data in JSON format.
+    """
+    item = get_object_or_404(Item, pk=id)
+    if item.user != request.user:
+        return JsonResponse({"status": "error", "message": "Unauthorized"}, status=403)
+        
+    return HttpResponse(serializers.serialize('json', [item]), content_type="application/json")
