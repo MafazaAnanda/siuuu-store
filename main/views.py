@@ -1,3 +1,6 @@
+from django.utils.html import strip_tags
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 import datetime
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -160,3 +163,32 @@ def delete_item(request, id):
     item = get_object_or_404(Item, pk=id)
     item.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+@csrf_exempt
+@require_POST
+def add_item_entry_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    description = strip_tags(request.POST.get("description"))
+    category = request.POST.get("category")
+    thumbnail = request.POST.get("thumbnail")
+    price = request.POST.get("price")
+    stock = request.POST.get("stock")
+    brand = request.POST.get("brand")
+    is_featured = request.POST.get("is_featured") == 'on'  # checkbox handling
+    user = request.user
+
+    new_item = Item(
+        name=name, 
+        description=description,
+        category=category,
+        thumbnail=thumbnail,
+        price=price,
+        stock=stock,
+        brand=brand,
+        is_featured=is_featured,
+        user=user
+
+    )
+    new_item.save()
+
+    return HttpResponse(b"CREATED", status=201)
