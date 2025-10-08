@@ -159,3 +159,19 @@ Flexbox adalah sistem layout satu dimensi yang di mana berguna untuk mengatur ko
     -Buat navbar dan kustom dengan tailwind
     -Buat file html baru yaitu card_item untuk preview masing-masing item dan kustom dengan tailwind
     -Buat folder image untuk menyimpan png untuk gambar default ketika belum ada item yang dibuat
+
+*Tugas 6
+*Apa perbedaan antara synchronous request dan asynchronous request?
+Synchronous request bersifat blocking di mana browser akan berhenti dan menunggu hingga permintaan selesai sebelum pengguna bisa melakukan hal lain sedangkan asynchronous request bersifat non-blocking di mana pengguna tetap berinteraksi dengan halaman web sementara permintaan diproses di "belakang".
+
+*Bagaimana AJAX bekerja di Django (alur request–response)?
+Pertama-tama JavaScript di sisi klien mengirimkan permintaan ke URL view Django. View tersebut kemudian memproses permintaan dan mengembalikan data dalam format JSON. Terakhir, JavaScript akan menerima data JSON ini dan menggunakannya untuk memperbarui bagian tertentu dari halaman secara dinamis tanpa mereload.
+
+*Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+Keuntungan utamanya adalah user experience yang lebih baik karena halaman terasa lebih cepat dan responsif tanpa perlu reload penuh. Selain itu, AJAX mengurangi beban server karena hanya data yang diperlukan saja yang ditransfer antara klien dan server, bukan seluruh halaman HTML.
+
+*Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+Keamanan dapat dipastikan dengan selalu menyertakan CSRF token pada header permintaan AJAX untuk mencegah serangan Cross-Site Request Forgery. 
+
+*Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+AJAX meningkatkan user experience secara drastis dengan membuat interaksi terasa instan dan mulus, seperti saat memuat data baru atau mengirim form tanpa refresh halaman. Hal ini mengurangi waktu tunggu dan membuat website terasa lebih modern dan responsif layaknya aplikasi desktop.
