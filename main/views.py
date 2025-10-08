@@ -111,37 +111,39 @@ def show_json_by_id(request, item_id):
     
 def register(request):
     form = UserCreationForm()
-    
+
     if request.method == "POST":
         form = UserCreationForm(request.POST)
-
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your account has been successfully created!')
+            messages.success(request, 'Your account has been successfully created! Please login.')
             return redirect('main:login')
-        
-    context = {'form' : form}
-    return render(request, 'register.html', context)
+        else:
+            messages.error(request, 'Registration failed. Please check the form and try again.')
+
+    context = {'form': form}
+    return render(request, 'register.html', context)    
 
 def login_user(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
-
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
+            response['Location'] += '?login=success'
             return response
-        
+        else:
+            messages.error(request, "Invalid username or password. Please try again.")
     else:
         form = AuthenticationForm(request)
-
-    context = {'form' : form}
+    
+    context = {'form': form}
     return render(request, 'login.html', context)
 
 def logout_user(request):
     logout(request)
+    messages.success(request, 'You have been logged out successfully.')
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response

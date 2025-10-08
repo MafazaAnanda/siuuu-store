@@ -153,6 +153,7 @@
         modal.classList.add('hidden');
       }, 150); 
   }
+
   async function showEditModal(itemId) {
     const modal = document.getElementById('editModal');
     modal.classList.remove('hidden');
@@ -176,7 +177,7 @@
 
     } catch (error) {
         console.error("Error populating edit form:", error);
-        alert("Could not load item data. Please try again.");
+        showToast('Failed to load item data', 'Please try again', 'error');
         hideEditModal();
     }
   }
@@ -201,6 +202,8 @@
         const result = await response.json();
         if (result.status === 'success') {
             hideEditModal();
+            showToast('Item updated successfully!', 'Your changes have been saved', 'success');
+            
             if (window.fetchItemsFromServer) {
                 window.fetchItemsFromServer();
             } else {
@@ -212,31 +215,33 @@
 
     } catch (error) {
         console.error("Error updating item:", error);
-        alert("An error occurred while updating the item.");
+        showToast('Failed to update item', error.message, 'error');
     }
     return false;
-}
+  }
 
   async function addItemEntry() {
-    await fetch("{% url 'main:add_item_entry_ajax' %}", {
-      method: "POST",
-      body: new FormData(document.querySelector('#itemForm')),
-    })
+    try {
+        await fetch("{% url 'main:add_item_entry_ajax' %}", {
+          method: "POST",
+          body: new FormData(document.querySelector('#itemForm')),
+        });
 
-    document.getElementById("itemForm").reset();
-    hideModal();
-      
-    // Show toast notification
-    showToast('Item added successfully!', '', 'success');
+        document.getElementById("itemForm").reset();
+        hideModal();
+          
+        showToast('Item added successfully!', 'Your item has been posted', 'success');
 
-    // Dispatch custom event to notify main.html about new data
-    document.dispatchEvent(new CustomEvent('itemAdded'));
-
+        document.dispatchEvent(new CustomEvent('itemAdded'));
+    } catch (error) {
+        console.error("Error adding item:", error);
+        showToast('Failed to add item', 'Please try again', 'error');
+    }
     return false;
-}
+  }
 
-document.getElementById("itemForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    addItemEntry();
-})
+  document.getElementById("itemForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      addItemEntry();
+  });
 </script>
